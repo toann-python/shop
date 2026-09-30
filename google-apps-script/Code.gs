@@ -1,6 +1,6 @@
 /**
  * ============================================================
- *  BÚN BÒ HUẾ — Máy chủ nhận đơn (Google Apps Script + Google Sheet)
+ *  WEB BÁN HÀNG — Máy chủ nhận đơn (Google Apps Script + Google Sheet)
  *
  *  Cài đặt:
  *   1. Mở https://sheets.google.com → tạo 1 file Google Sheet trống.
@@ -11,7 +11,7 @@
  *   5. Deploy → New deployment → Type: Web app
  *      → Execute as: Me  ·  Who has access: Anyone
  *      → Deploy, rồi copy link kết thúc bằng /exec
- *   6. Vào admin.html → Cửa hàng → Máy chủ nhận đơn: dán link /exec + TOKEN.
+ *   6. Vào admin.html → Cửa hàng → Máy chủ: dán link /exec + TOKEN.
  *
  *  Hợp đồng API (giữ đúng với assets/js/remote.js):
  *    GET  ?action=ping   &token=T            -> { ok, app, count }
@@ -26,7 +26,7 @@
  * ============================================================
  */
 
-var TOKEN = 'Doi-Token-Nay-Thanh-Chuoi-Ngau-Nhien-Dai';
+var TOKEN = 'shop-rDlaW9c8hwP_N3Ik1kXCiw5k3TN8zwG8';
 var SHEET_NAME = 'DonHang';
 var APP_NAME = 'Bún Bò Huế — máy chủ nhận đơn';
 var CONFIG_SHEET = 'CauHinh';

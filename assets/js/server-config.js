@@ -10,7 +10,7 @@
  * HƯỚNG DẪN: xem mục 3 trong README.md
  * ============================================================ */
 window.BB_SERVER_CONFIG = {
-  url: '',
-  token: '',
-  shop: ''
+  url: 'https://script.google.com/macros/s/AKfycbx_frt5yhHIREW5xhOETPs9bvv-i-PHhhpBBYHhg2EKaQ2cDeDJud-IvXaftpI_S4JYUA/exec',
+  token: 'shop-rDlaW9c8hwP_N3Ik1kXCiw5k3TN8zwG8',
+  shop: 'Bún Bò Huế Nhà Làm'
 };
