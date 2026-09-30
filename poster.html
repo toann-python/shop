@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bảng giá + mã QR</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧾</text></svg>" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    body { padding: 24px 16px 60px; }
+    .poster-qr img { border: 6px solid #fff; border-radius: 12px; box-shadow: 0 8px 24px rgba(88, 40, 20, .15); }
+  </style>
+</head>
+
+<body>
+  <div class="print-bar no-print">
+    <button class="btn" onclick="window.print()">🖨️ In / Lưu PDF</button>
+    <a class="btn ghost" href="index.html">← Về web bán hàng</a>
+    <a class="btn ghost" href="admin.html">🔐 Khu vực chủ quán</a>
+  </div>
+
+  <div class="poster" id="poster">
+    <div class="poster-head">
+      <div class="poster-logo"><span class="logo-mark" data-brand-mark>🍜</span></div>
+      <h1 id="pName">Bún Bò Huế Nhà Làm</h1>
+      <p id="pSlogan">Nước dùng ninh 6 tiếng</p>
+      <p id="pMeta" style="font-size:14px;opacity:.92"></p>
+    </div>
+
+    <div class="poster-body">
+      <div class="poster-qr">
+        <div id="pQr"></div>
+        <b>📱 Quét mã để xem thực đơn &amp; đặt giao</b>
+        <span id="pUrl" class="muted" style="font-size:13px;word-break:break-all"></span>
+      </div>
+
+      <h3 style="text-align:center;margin:18px 0 8px">Thực đơn</h3>
+      <ul class="poster-list" id="pList"></ul>
+    </div>
+
+    <div class="poster-foot">
+      <div>📞 <b id="pPhone"></b> · 🕒 <span id="pOpen"></span></div>
+      <div id="pAddr" style="margin-top:4px"></div>
+      <div id="pCodes" style="margin-top:6px"></div>
+    </div>
+  </div>
+
+  <script src="assets/vendor/qrcode.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/qr.js"></script>
+  <script>
+    (function () {
+      var shop = BB.shop();
+      var params = new URLSearchParams(location.search);
+      var url = params.get('u') || shop.siteUrl ||
+        (location.protocol === 'file:' ? '' : location.origin + location.pathname.replace(/poster\.html.*$/, ''));
+      if (url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
+
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      document.getElementById('pName').textContent = shop.name;
+      BB.applyBrand();
+      document.getElementById('pSlogan').textContent = shop.slogan;
+      document.getElementById('pMeta').textContent = shop.address;
+      document.getElementById('pPhone').textContent = shop.phone;
+      document.getElementById('pOpen').textContent = shop.open;
+      document.getElementById('pAddr').textContent = shop.address;
+      document.getElementById('pUrl').textContent =
+        url || 'Chưa cấu hình địa chỉ web — mở admin.html › Mã QR để dán link';
+
+      document.getElementById('pList').innerHTML = BB.menu()
+        .filter(function (m) { return m.available; })
+        .map(function (m) {
+          return '<li><span style="display:flex;gap:10px;align-items:center">' +
+            (m.image
+              ? '<img src="' + esc(m.image) + '" alt="" style="width:38px;height:38px;object-fit:cover;border-radius:10px" />'
+              : '<span style="width:38px;text-align:center;font-size:20px">' + m.emoji + '</span>') +
+            '<span>' + esc(m.name) + (m.hot ? ' 🔥' : '') + '</span></span><b>' + BB.money(m.price) + '</b></li>';
+        }).join('');
+
+      var codes = Object.keys(BB.codes());
+      document.getElementById('pCodes').textContent = codes.length
+        ? 'Mã ưu đãi: ' + codes.map(function (k) { return k + ' (' + BB.codes()[k].note + ')'; }).join(' · ')
+        : '';
+
+      if (url) {
+        document.getElementById('pQr').appendChild(BBQR.toImg(url, 260));
+      } else {
+        document.getElementById('pQr').innerHTML = '<b style="color:var(--accent)">Chưa có URL web</b>';
+      }
+    })();
+  </script>
+</body>
+
+</html>

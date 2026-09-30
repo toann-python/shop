@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Cửa hàng</title>
+  <meta name="description" content="Xem giá, thêm vào giỏ và đặt hàng. Chủ quán gọi xác nhận trước khi giao." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+<body>
+  <header class="header">
+    <div class="header-in wrap">
+      <a class="logo" href="#">
+        <span class="logo-mark" data-brand-mark>🛒</span>
+        <span id="shopName">Cửa hàng<small id="shopSlogan"></small></span>
+      </a>
+      <nav class="nav">
+        <a href="#san-pham" class="hide-sm">Sản phẩm</a>
+        <a href="admin.html" class="hide-sm">Chủ quán</a>
+        <button class="btn ghost cart-btn" id="openCart" aria-label="Mở giỏ hàng">
+          🛒 Giỏ <span class="cart-badge" id="cartBadge">0</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" id="san-pham">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="menuTitle">Sản phẩm</h2>
+          <p id="menuSub">Chọn món rồi bấm “Thêm vào giỏ”.</p>
+        </div>
+        <div class="toolbar">
+          <div id="chips" class="chips"></div>
+          <div class="search">
+            <input id="search" type="search" placeholder="Tìm sản phẩm…" />
+          </div>
+        </div>
+        <div class="grid" id="menuGrid"></div>
+        <div class="empty hidden" id="menuEmpty">
+          <span class="big">🔍</span> Không có sản phẩm nào khớp.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-in">
+      <div>
+        <b id="footName">Cửa hàng</b>
+        <div id="footAddr"></div>
+        <div id="footOpen"></div>
+      </div>
+      <div>
+        <div>📞 <a id="footPhone" href="tel:"></a></div>
+        <div style="margin-top:6px"><a class="pill" href="admin.html">🔐 Khu vực chủ quán</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- THANH GIỎ TRÊN ĐIỆN THOẠI -->
+  <div class="cartbar hidden" id="cartBar">
+    <div class="sum">
+      <b id="barCount">0 món</b>
+      <span id="barTotal">0 ₫</span>
+    </div>
+    <button class="btn" id="barCheckout">Xem giỏ hàng</button>
+  </div>
+
+  <!-- GIỎ HÀNG -->
+  <div class="overlay" id="overlay"></div>
+  <aside class="drawer" id="drawer" aria-label="Giỏ hàng">
+    <div class="drawer-head">
+      <h3>🛒 Giỏ hàng</h3>
+      <button class="icon-btn" id="closeCart" title="Đóng">✕</button>
+    </div>
+    <div class="drawer-body" id="cartBody"></div>
+    <div class="drawer-foot" id="cartFoot"></div>
+  </aside>
+
+  <!-- CHỐT ĐƠN -->
+  <div class="modal" id="checkoutModal">
+    <div class="sheet">
+      <div class="sheet-head">
+        <h3>✅ Chốt đơn</h3>
+        <button class="icon-btn x" data-close>✕</button>
+      </div>
+      <p class="muted" style="margin-top:0">Điền 3 dòng dưới đây, chủ quán sẽ gọi xác nhận.</p>
+      <form id="checkoutForm" novalidate>
+        <div class="field" id="f-name">
+          <label for="cName">Họ và tên *</label>
+          <input id="cName" name="name" autocomplete="name" placeholder="Nguyễn Văn A" />
+          <span class="msg"></span>
+        </div>
+        <div class="field" id="f-phone">
+          <label for="cPhone">Số điện thoại *</label>
+          <input id="cPhone" name="phone" inputmode="tel" autocomplete="tel" placeholder="09xx xxx xxx" />
+          <span class="msg"></span>
+        </div>
+        <div class="field" id="f-address">
+          <label for="cAddress">Địa chỉ nhận hàng *</label>
+          <textarea id="cAddress" name="address" autocomplete="street-address"
+            placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành"></textarea>
+          <span class="msg"></span>
+        </div>
+        <div class="field" id="f-note">
+          <label for="cNote">Ghi chú (không bắt buộc)</label>
+          <textarea id="cNote" name="note" style="min-height:56px"
+            placeholder="Giao sau 18h, gọi trước khi tới…"></textarea>
+        </div>
+        <div class="mini-order" id="orderSummary"></div>
+        <button class="btn block" type="submit">Xác nhận đặt hàng</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ĐÃ ĐẶT -->
+  <div class="modal" id="doneModal">
+    <div class="sheet center">
+      <h3 style="font-size:20px;margin:0 0 4px">Đã nhận đơn <span id="doneCode"></span></h3>
+      <p class="muted" id="doneSent" style="margin:0 0 10px"></p>
+      <div class="mini-order" id="doneDetail" style="text-align:left"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+        <button class="btn green" id="sendWA">💬 Gửi đơn qua WhatsApp</button>
+        <button class="btn ghost" id="copyOrder">📋 Chép nội dung đơn</button>
+        <button class="btn" id="doneMenu">Về danh sách</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-wrap" id="toasts"></div>
+
+  <script src="assets/js/server-config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/remote.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Khu vực chủ quán</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+<body>
+  <!-- ĐĂNG NHẬP -->
+  <div class="login-wrap" id="loginView">
+    <form class="login-card" id="loginForm">
+      <div class="logo-mark">🔐</div>
+      <h1 style="font-size:22px">Khu vực chủ quán</h1>
+      <p class="muted">Đăng nhập để sửa giá, màu, logo và xem đơn hàng.</p>
+      <div class="field" id="l-user">
+        <label for="lUser">Tài khoản</label>
+        <input id="lUser" value="admin" autocomplete="username" />
+      </div>
+      <div class="field" id="l-pass">
+        <label for="lPass">Mật khẩu</label>
+        <input id="lPass" type="password" placeholder="••••" autocomplete="current-password" />
+      </div>
+      <button class="btn block" type="submit">Đăng nhập</button>
+      <div class="hint">Tài khoản mặc định: <b>admin</b> · Mật khẩu: <b>1234</b></div>
+      <div id="loginErr" style="color:var(--accent);font-weight:700;font-size:13.5px;margin-top:10px"></div>
+      <div class="center" style="margin-top:14px"><a class="pill" href="index.html">← Về trang bán hàng</a></div>
+    </form>
+  </div>
+
+  <!-- KHU VỰC CHỦ QUÁN -->
+  <div class="admin hidden" id="adminView">
+    <aside class="side">
+      <div class="logo">
+        <span class="logo-mark" data-brand-mark>🛒</span>
+        <span>Chủ quán<small id="sideShop"></small></span>
+      </div>
+      <button data-tab="dish" class="on">🛍️ Sản phẩm</button>
+      <button data-tab="order">🧾 Đơn hàng <span id="newOrderCount"></span></button>
+      <button data-tab="qr">📱 Mã QR</button>
+      <button data-tab="shop">🏪 Cửa hàng</button>
+      <div class="spacer"></div>
+      <div class="who" id="whoami"></div>
+      <button id="viewSite">🌐 Xem trang bán hàng</button>
+      <button id="logout">🚪 Đăng xuất</button>
+    </aside>
+
+    <div class="main">
+      <!-- SẢN PHẨM -->
+      <section data-panel="dish">
+        <div class="topbar">
+          <div>
+            <h1>Quản lý sản phẩm</h1>
+            <p class="muted">Thêm mới, đổi giá ngay trên bảng, tạm ẩn món hết hàng.</p>
+          </div>
+          <button class="btn" id="addDish">+ Thêm sản phẩm</button>
+        </div>
+
+        <div class="panel">
+          <div class="toolbar" style="margin:0 0 12px">
+            <div class="chips" id="dishFilter"></div>
+            <div class="search"><input id="dishSearch" type="search" placeholder="Tìm trong danh sách…" /></div>
+          </div>
+          <div class="scroll">
+            <table class="tbl" id="dishTable">
+              <thead>
+                <tr>
+                  <th>Tên</th>
+                  <th>Danh mục</th>
+                  <th>Giá bán</th>
+                  <th>Trạng thái</th>
+                  <th class="num">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="dishRows"></tbody>
+            </table>
+          </div>
+          <div class="hint">Đổi giá ngay tại đây, nhấn Enter để lưu. Muốn khách trên máy khác thấy thay đổi, bấm
+            <b>⬆️ Đẩy món + giá + màu lên web</b> ở tab <b>Cửa hàng</b>.</div>
+        </div>
+      </section>
+
+      <!-- ĐƠN HÀNG -->
+      <section data-panel="order" class="hidden">
+        <div class="topbar">
+          <div>
+            <h1>Đơn hàng</h1>
+            <p class="muted">Khách đặt từ trang bán hàng. Đổi trạng thái để bếp nắm.</p>
+          </div>
+          <div style="margin-left:auto;text-align:right">
+            <div class="muted" id="syncState" style="font-size:13px">Chưa kết nối máy chủ</div>
+            <button class="btn ghost sm" id="syncBtn" style="margin-top:6px">🔄 Đồng bộ đơn</button>
+          </div>
+        </div>
+        <div class="kpi" id="kpi"></div>
+        <div class="panel">
+          <div class="scroll">
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th>Mã</th>
+                  <th>Khách</th>
+                  <th>Sản phẩm</th>
+                  <th class="num">Tổng</th>
+                  <th>Trạng thái</th>
+                  <th class="num">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="orderRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- MÃ QR -->
+      <section data-panel="qr" class="hidden">
+        <div class="topbar">
+          <div>
+            <h1>Mã QR dẫn tới web</h1>
+            <p class="muted">In mã này lên bàn hoặc gửi khách quét. Mã luôn trỏ về đúng địa chỉ web đang chạy.</p>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="qr-row">
+            <div class="qr-box"><canvas id="qrCanvas" width="520" height="520"></canvas></div>
+            <div class="qr-info">
+              <div class="field">
+                <label for="qrUrl">Địa chỉ web trong mã QR</label>
+                <input id="qrUrl" />
+                <div class="hint">Mặc định lấy từ trình duyệt. Nếu bạn mở bằng <b>file://</b> hoặc chạy localhost,
+                  hãy dán đúng link GitHub Pages (vd: <code>https://tai-khoan.github.io/ten-repo/</code>) để khách ngoài
+                  điện thoại quét được.</div>
+              </div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap">
+                <button class="btn" id="qrRedraw">🔄 Vẽ lại mã</button>
+                <button class="btn ghost" id="qrDownload">⬇️ Tải PNG</button>
+                <button class="btn ghost" id="qrCopy">📋 Sao chép link</button>
+                <a class="btn ghost" id="qrPoster" target="_blank" href="#">🧾 Xem bảng giá + QR để in</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CỬA HÀNG -->
+      <section data-panel="shop" class="hidden">
+        <div class="topbar">
+          <div>
+            <h1>Cài đặt cửa hàng</h1>
+            <p class="muted">Màu sắc, logo, thông tin hiển thị, phí giao hàng, mã ưu đãi và sao lưu dữ liệu.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Màu sắc trang bán hàng</h3>
+          <p class="muted">Chọn 3 màu: màu nhấn (nút, giá), màu nền, màu chữ. Trang bán hàng đổi theo ngay lập tức.</p>
+          <div class="color-row" style="margin:12px 0">
+            <label class="color-item"><input type="color" id="tAccent" /><span>Màu nhấn</span></label>
+            <label class="color-item"><input type="color" id="tBg" /><span>Màu nền</span></label>
+            <label class="color-item"><input type="color" id="tText" /><span>Màu chữ</span></label>
+          </div>
+          <div class="swatches" id="themePresets"></div>
+          <div class="hint" id="themeState"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Thông tin cửa hàng</h3>
+          <div class="field">
+            <label>Logo</label>
+            <div class="media-pick">
+              <div class="media-prev" id="lPrev">🛒</div>
+              <div class="media-ctl">
+                <div class="media-btns">
+                  <input type="file" id="lImgFile" accept="image/*" hidden />
+                  <button type="button" class="btn ghost sm" id="lImgPick">📷 Chọn logo từ máy</button>
+                  <button type="button" class="btn ghost sm" id="lImgClear">🗑 Bỏ logo</button>
+                </div>
+                <input id="lImgUrl" placeholder="hoặc dán link logo (https://…)" />
+                <span class="muted" style="font-size:12px">Logo hiện ở đầu trang bán hàng, khu vực chủ quán, bảng in và icon tab trình duyệt. Nên dùng ảnh vuông, nền trong suốt.</span>
+              </div>
+            </div>
+          </div>
+          <div class="field" style="max-width:220px">
+            <label for="sEmoji">Biểu tượng (khi chưa có logo)</label>
+            <input id="sEmoji" placeholder="🛒" maxlength="4" />
+          </div>
+          <div class="two">
+            <div class="field"><label for="sName">Tên cửa hàng</label><input id="sName" /></div>
+            <div class="field"><label for="sPhone">Hotline</label><input id="sPhone" /></div>
+          </div>
+          <div class="field"><label for="sSlogan">Khẩu hiệu</label><input id="sSlogan" /></div>
+          <div class="field"><label for="sAddr">Địa chỉ</label><input id="sAddr" /></div>
+          <div class="two">
+            <div class="field"><label for="sOpen">Giờ mở cửa</label><input id="sOpen" /></div>
+            <div class="field"><label for="sSite">URL web (cho QR)</label><input id="sSite" placeholder="https://tai-khoan.github.io/ten-repo/" /></div>
+          </div>
+          <div class="two">
+            <div class="field"><label for="sShip">Phí giao hàng (đ)</label><input id="sShip" type="number" min="0" /></div>
+            <div class="field"><label for="sFree">Miễn phí giao từ (đ)</label><input id="sFree" type="number" min="0" /></div>
+          </div>
+          <button class="btn" id="saveShop">💾 Lưu thông tin</button>
+        </div>
+
+        <div class="panel" id="remotePanel">
+          <h3>☁️ Máy chủ (đồng bộ cho mọi khách)</h3>
+          <p class="muted">
+            Dự án có sẵn mã máy chủ: mở <code>google-apps-script/Code.gs</code> trong repo, dán vào
+            <i>Extensions → Apps Script</i>, đổi <code>TOKEN</code> rồi Deploy (Execute as: Me, Access: Anyone).
+            Link <b>/exec</b> và TOKEN dán vào hai ô bên dưới.
+          </p>
+          <div class="two">
+            <div class="field">
+              <label for="rUrl">Link Web App (kết thúc bằng /exec)</label>
+              <input id="rUrl" placeholder="https://script.google.com/macros/s/..../exec" />
+            </div>
+            <div class="field">
+              <label for="rToken">TOKEN</label>
+              <input id="rToken" placeholder="chuỗi bí mật giống trong Code.gs" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="rShop">Tên cửa hàng ghi kèm đơn (cho nhiều quán dùng chung 1 Sheet)</label>
+            <input id="rShop" placeholder="Tên cửa hàng của bạn" />
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <button class="btn" id="rSave">💾 Lưu &amp; kiểm tra</button>
+            <button class="btn ghost" id="rPushAll">⬆️ Đẩy đơn trên máy này lên server</button>
+            <span id="rState" class="muted" style="font-size:13.5px"></span>
+          </div>
+          <div class="hint" id="rPending"></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px">
+            <button class="btn" id="rPushConfig">⬆️ Đẩy món + giá + màu lên web</button>
+            <button class="btn ghost" id="rPullConfig">⬇️ Lấy cấu hình từ web</button>
+          </div>
+          <div class="hint" id="rConfState">Chưa có cấu hình nào trên máy chủ.</div>
+        </div>
+
+        <div class="panel">
+          <h3>Danh mục</h3>
+          <p class="muted">Thêm/xoá danh mục (dùng chữ thường không dấu, ví dụ <code>chao</code>).</p>
+          <div class="chips" id="catChips" style="margin-bottom:12px"></div>
+          <div class="code-row" style="max-width:420px">
+            <input id="catName" placeholder="Tên danh mục" />
+            <input id="catEmoji" placeholder="🍲" style="max-width:80px" />
+            <button class="btn ghost" id="addCat">Thêm</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Mã ưu đãi</h3>
+          <div class="scroll">
+            <table class="tbl">
+              <thead>
+                <tr><th>Mã</th><th>Loại</th><th>Mức giảm</th><th>Mô tả</th><th class="num">Thao tác</th></tr>
+              </thead>
+              <tbody id="codeRows"></tbody>
+            </table>
+          </div>
+          <div class="two" style="margin-top:12px;max-width:760px">
+            <div class="field"><label for="nCode">Mã mới</label><input id="nCode" placeholder="CHAOBAN10" /></div>
+            <div class="field">
+              <label for="nType">Loại</label>
+              <select id="nType">
+                <option value="percent">Phần trăm (%)</option>
+                <option value="fixed">Số tiền cố định (đ)</option>
+                <option value="ship">Miễn phí giao hàng</option>
+              </select>
+            </div>
+            <div class="field"><label for="nValue">Giá trị</label><input id="nValue" type="number" min="0" value="10" /></div>
+          </div>
+          <button class="btn" id="addCode">Thêm mã</button>
+        </div>
+
+        <div class="panel">
+          <h3>Dữ liệu</h3>
+          <p class="muted">Dữ liệu lưu trong trình duyệt của máy này. Xuất file JSON để lưu lại hoặc chuyển sang máy khác.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+            <button class="btn ghost" id="exportData">⬇️ Xuất JSON</button>
+            <button class="btn ghost" id="importBtn">⬆️ Nhập JSON</button>
+            <input type="file" id="importFile" accept="application/json" class="hidden" />
+            <button class="btn ghost" id="resetMenu">♻️ Khôi phục danh sách mặc định</button>
+            <button class="btn ghost" id="resetAll" style="color:var(--accent)">🗑 Xoá tất cả &amp; tạo lại</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- SỬA SẢN PHẨM -->
+  <div class="modal" id="dishModal">
+    <div class="sheet">
+      <div class="sheet-head">
+        <h3 id="dishModalTitle">Thêm sản phẩm</h3>
+        <button class="icon-btn" data-close>✕</button>
+      </div>
+      <form id="dishForm" novalidate>
+        <div class="two">
+          <div class="field">
+            <label for="dName">Tên sản phẩm *</label>
+            <input id="dName" placeholder="Bún bò Huế đặc biệt" />
+          </div>
+          <div class="field">
+            <label for="dCat">Danh mục</label>
+            <select id="dCat"></select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="dDesc">Mô tả</label>
+          <textarea id="dDesc" style="min-height:64px" placeholder="Nguyên liệu, đặc điểm, khối lượng…"></textarea>
+        </div>
+        <div class="two">
+          <div class="field">
+            <label for="dPrice">Giá bán (đ) *</label>
+            <input id="dPrice" type="number" min="0" step="1000" placeholder="45000" />
+          </div>
+          <div class="field">
+            <label for="dOld">Giá gạch ngang (đ)</label>
+            <input id="dOld" type="number" min="0" step="1000" placeholder="0 = không có" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Ảnh</label>
+          <div class="media-pick">
+            <div class="media-prev" id="dPrev">🛍️</div>
+            <div class="media-ctl">
+              <div class="media-btns">
+                <input type="file" id="dImgFile" accept="image/*" hidden />
+                <button type="button" class="btn ghost sm" id="dImgPick">📷 Chọn ảnh từ máy</button>
+                <button type="button" class="btn ghost sm" id="dImgClear">🗑 Bỏ ảnh</button>
+              </div>
+              <input id="dImgUrl" placeholder="hoặc dán link ảnh (https://…)" />
+              <span class="muted" style="font-size:12px">Ảnh tự thu nhỏ về ~640px trước khi lưu. Có ảnh thì hiện ảnh, không có thì dùng emoji.</span>
+            </div>
+          </div>
+        </div>
+        <div class="two">
+          <div class="field">
+            <label for="dEmoji">Biểu tượng (dùng khi không có ảnh)</label>
+            <input id="dEmoji" placeholder="🍜" maxlength="4" />
+          </div>
+          <div class="field">
+            <label for="dUnit">Đơn vị</label>
+            <input id="dUnit" placeholder="tô / phần / cân / ly" />
+          </div>
+        </div>
+        <div class="two">
+          <label style="display:flex;gap:8px;align-items:center;font-weight:600"><input type="checkbox" id="dHot" style="width:auto" /> 🔥 Bán chạy</label>
+          <label style="display:flex;gap:8px;align-items:center;font-weight:600"><input type="checkbox" id="dAvail" style="width:auto" /> ✅ Đang bán</label>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:8px">
+          <button class="btn" type="submit" style="flex:1">Lưu sản phẩm</button>
+          <button class="btn ghost" type="button" data-close>Huỷ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- CHI TIẾT ĐƠN -->
+  <div class="modal" id="orderModal">
+    <div class="sheet" id="orderSheet"></div>
+  </div>
+
+  <div class="toast-wrap" id="toasts"></div>
+
+  <script src="assets/js/server-config.js"></script>
+  <script src="assets/vendor/qrcode.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/remote.js"></script>
+  <script src="assets/js/qr.js"></script>
+  <script src="assets/js/admin.js"></script>
+</body>
+
+</html>
