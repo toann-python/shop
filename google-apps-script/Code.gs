@@ -26,7 +26,7 @@
  * ============================================================
  */
 
-var TOKEN = 'shop-rDlaW9c8hwP_N3Ik1kXCiw5k3TN8zwG8';
+var TOKEN = '070608';
 var SHEET_NAME = 'DonHang';
 var APP_NAME = 'Bún Bò Huế — máy chủ nhận đơn';
 var CONFIG_SHEET = 'CauHinh';

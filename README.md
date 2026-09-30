@@ -9,7 +9,7 @@ Web tĩnh (HTML/CSS/JS thuần, không cần cài gì), dành cho bán đồ ăn
 - **Máy chủ nhận đơn + đồng bộ cấu hình** (Google Apps Script + Google Sheet): đơn của khách tự về máy chủ, và **món/giá/màu/logo chủ quán sửa cũng tự tới mọi khách**.
 
 🌐 **Web đang chạy:** **https://toann-python.github.io/shop/**
-Khu vực chủ quán: https://toann-python.github.io/shop/admin.html — đăng nhập `admin` / `1234`
+Khu vực chủ quán: https://toann-python.github.io/shop/admin.html — tài khoản `admin`, mật khẩu do chủ quán tự đặt
 
 Mọi thứ chạy bằng HTML/CSS/JavaScript thuần, không cần build, không cần server riêng.
 
@@ -30,10 +30,10 @@ Sau đó mở `http://localhost:8000`.
 
 | Tài khoản | Mật khẩu |
 | --------- | -------- |
-| `admin`   | `1234`   |
+| `admin`   | *(mật khẩu bạn tự đặt)* |
 
-Đổi mật khẩu: sửa hàm `signIn()` trong `assets/js/data.js` (dòng `if (user === 'admin' && pass === '1234')`).
-Phiên đăng nhập tự hết sau 8 giờ. Trước khi đưa web lên mạng, nên đổi mật khẩu này.
+Đổi mật khẩu: sửa hàm `signIn()` trong `assets/js/data.js` (dòng `if (user === 'admin' && pass === '…')`),
+rồi commit. Phiên đăng nhập tự hết sau 8 giờ.
 
 ## 3. Sửa màu sắc, logo, giá bán
 
@@ -151,7 +151,7 @@ Tạo mã mới ở tab *Cửa hàng → Mã ưu đãi*.
 
 ```
 index.html                    trang bán hàng
-admin.html                    khu vực chủ quán (đăng nhập admin/1234)
+admin.html                    khu vực chủ quán (đăng nhập admin + mật khẩu bạn đặt)
 poster.html                   bảng giá + mã QR để in
 google-apps-script/Code.gs    máy chủ nhận đơn + lưu cấu hình (Google Apps Script + Sheet)
 assets/css/style.css          toàn bộ giao diện (màu lấy từ biến --accent/--bg/--text)

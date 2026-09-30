@@ -1,6 +1,6 @@
 /* ============================================================
    KHU VỰC CHỦ QUÁN — logic
-   Đăng nhập admin / 1234
+   Đăng nhập: xem hàm signIn() trong assets/js/data.js
    ============================================================ */
 (function () {
   'use strict';

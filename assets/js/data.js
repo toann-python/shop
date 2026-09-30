@@ -120,15 +120,15 @@
   }
 
   /* ---------- auth ---------- */
-  // Tài khoản chủ quán: admin / 1234 — đổi trong Cài đặt nếu muốn.
+  // Tài khoản chủ quán: admin / 070608 — đổi trực tiếp ở đây rồi đẩy lên web.
   function signIn(user, pass) {
-    if (user === 'admin' && pass === '1234') {
+    if (user === 'admin' && pass === '070608') {
       localStorage.setItem(SESSION_KEY, JSON.stringify({
         user: 'admin', at: Date.now(), until: Date.now() + 8 * 3600e3
       }));
       return { ok: true, user: 'admin' };
     }
-    return { ok: false, error: 'Sai tài khoản hoặc mật khẩu. Tài khoản mặc định: admin / 1234' };
+    return { ok: false, error: 'Sai tài khoản hoặc mật khẩu.' };
   }
   function signOut() { localStorage.removeItem(SESSION_KEY); }
   function session() {
