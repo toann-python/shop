@@ -54,7 +54,14 @@ Màu chọn được tự suy ra thành màu viền, màu chữ phụ, nền ô 
 > **Cửa hàng → ⬆️ Đẩy món + giá + màu lên web** (cần cấu hình máy chủ ở mục 4). Nếu chưa cấu hình, bản đẩy lên
 > GitHub vẫn có sẵn dữ liệu mặc định trong `assets/js/data.js` (`seedMenu()`).
 
-## 4. Bật máy chủ: đơn hàng + đồng bộ cấu hình (khuyên dùng)
+> **Máy chủ đã được cấu hình sẵn cho bản này.** Link `/exec` và TOKEN đã nằm trong `assets/js/server-config.js`
+> nên chỉ cần bấm **⬆️ Đẩy món + giá + màu lên web** là mọi khách thấy ngay. Sheet máy chủ:
+> https://docs.google.com/spreadsheets/d/1PIhoeLPCcGaVy6Kmy7XaIZzcQYU5UL21hPLmz77kC3A/edit
+> (sheet `DonHang` = đơn hàng, sheet `CauHinh` = món/giá/màu/logo).
+
+> Mục dưới đây chỉ cần đọc nếu bạn muốn dựng máy chủ riêng cho một cửa hàng khác.
+
+## 4. Dựng máy chủ riêng (Google Apps Script + Google Sheet, miễn phí)
 
 Khách đặt đơn trên điện thoại của họ, nên cần một chỗ tập trung. Dự án có sẵn mã máy chủ
 (Google Apps Script + Google Sheet, miễn phí):
