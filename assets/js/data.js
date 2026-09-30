@@ -53,7 +53,7 @@
         open: '06:30 – 21:00 hằng ngày',
         shipFee: 15000,
         freeShipFrom: 250000,
-        siteUrl: '',
+        siteUrl: 'https://toann-python.github.io/shop/',
         logo: '',
         emoji: '🍜',
         theme: { accent: '#d92b1f', bg: '#ffffff', text: '#1f2937' }

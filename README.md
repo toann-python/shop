@@ -8,6 +8,9 @@ Web tĩnh (HTML/CSS/JS thuần, không cần cài gì), dành cho bán đồ ăn
 - **Khu vực chủ quán** (`admin.html`): sửa **giá bán**, **logo**, **màu sắc** trang bán hàng, thêm/xoá sản phẩm, xem đơn hàng, sinh mã QR.
 - **Máy chủ nhận đơn + đồng bộ cấu hình** (Google Apps Script + Google Sheet): đơn của khách tự về máy chủ, và **món/giá/màu/logo chủ quán sửa cũng tự tới mọi khách**.
 
+🌐 **Web đang chạy:** **https://toann-python.github.io/shop/**
+Khu vực chủ quán: https://toann-python.github.io/shop/admin.html — đăng nhập `admin` / `1234`
+
 Mọi thứ chạy bằng HTML/CSS/JavaScript thuần, không cần build, không cần server riêng.
 
 ---
